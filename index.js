@@ -1,17 +1,10 @@
-var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria']);
+var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
+
 app.controller('MainCtrl', function($scope, planets, $window) {
   var vm = this;
   var store = $window.localStorage;
   var storeKey = 'htmlToFormlyRememberedInput';
-  vm.user = {};
-
-  vm.onSubmit = onSubmit;
-  vm.autofill = autofill;
-  vm.reset = reset;
-  vm.rememberInputChanged = rememberInputChanged;
-
-  vm.planets = planets;
-  vm.lightsaberColors = [
+  var lightsaberColors = [
     {name: 'No Preference', value: 'no preference'},
     {name: 'Green', value: 'green'},
     {name: 'Red', value: 'red'},
@@ -21,6 +14,110 @@ app.controller('MainCtrl', function($scope, planets, $window) {
     {name: 'Pink', value: 'pink'},
     {name: 'Yellow', value: 'yellow'}
   ];
+  vm.user = {};
+  vm.userFields = [
+    {
+      type: 'input',
+      key: 'firstName',
+      templateOptions: {
+        label: 'First Name',
+        required: true,
+        placeholder: 'First Name'
+      }
+    },
+    {
+      type: 'input',
+      key: 'lastName',
+      templateOptions: {
+        label: 'Last Name',
+        required: true,
+        placeholder: 'Last Name'
+      }
+    },
+    {
+      type: 'input',
+      key: 'email',
+      templateOptions: {
+        type: 'email',
+        label: 'Email Address',
+        required: true,
+        placeholder: 'Email Address'
+      }
+    },
+    {
+      type: 'input',
+      key: 'confirmEmail',
+      templateOptions: {
+        type: 'email',
+        label: 'Confirm Email Address',
+        required: true,
+        placeholder: 'Confirm Email Address'
+      }
+    },
+    {
+      type: 'textarea',
+      key: 'streetAddress',
+      templateOptions: {
+        label: 'Street Address',
+        required: true,
+        placeholder: 'Street Address'
+      }
+    },
+    {
+      type: 'select',
+      key: 'planet',
+      templateOptions: {
+        label: 'Planet',
+        required: true,
+        options: planets
+      }
+    },
+    {
+      type: 'input',
+      key: 'postalCode',
+      templateOptions: {
+        type: 'number',
+        label: 'Postal Code',
+        required: true,
+        placeholder: 'Postal Code'
+      }
+    },
+    {
+      type: 'radio',
+      key: 'gender',
+      templateOptions: {
+        label: 'Your Gender?',
+        options: [
+          {name: 'Male', value: 'male'},
+          {name: 'Female', value: 'female'},
+          {name: 'Prefer not to say', value: 'unspecified'}
+        ]
+      }
+    },
+    {
+      type: 'select',
+      key: 'colorPreference',
+      templateOptions: {
+        label: 'Favorite Lightsaber Color?',
+        options: lightsaberColors
+      }
+    },
+    {
+      type: 'checkbox',
+      key: 'agree',
+      templateOptions: {
+        label: 'Do you sign your soul away to our TOS?'
+      }
+    }
+  ];
+
+  vm.onSubmit = onSubmit;
+  vm.autofill = autofill;
+  vm.reset = reset;
+  vm.rememberInputChanged = rememberInputChanged;
+
+  vm.planets = planets;
+  vm.lightsaberColors = lightsaberColors;
 
   var stopWatchingModel;
   var preExistingData = store.getItem(storeKey);
@@ -62,7 +159,7 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       email: 'luke@ilovedaddy.com',
       confirmEmail: 'luke@ilovedaddy.com',
       streetAddress: '1234 Hi Five Drive',
-      planet: 'Tatooine',
+      planet: 'tatooine',
       postalCode: 12345,
       gender: 'male',
       colorPreference: 'blue',

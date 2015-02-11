@@ -33,6 +33,15 @@
   </div>
 
   <div>
+    <h2>New and Improved Lightsaber order Form</h2>
+    <form name="vm.userForm" ng-submit="vm.onSubmit(vm.user)">
+      <formly-form model="vm.user" fields="vm.userFields">
+        <button type="submit" class="btn btn-default" ng-disabled="vm.userForm.$invalid">Submit</button>
+      </formly-form>
+    </form>
+  </div>
+
+  <div>
     <h2>Lightsaber order Form</h2>
     <form name="vm.userForm" ng-submit="vm.onSubmit(vm.user)">
       <div class="form-group" has-error="vm.userForm.firstName">
@@ -128,6 +137,8 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-messages/angular-messages.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-formly/dist/formly.js"></script>
+<script src="bower_components/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.js"></script>
 <script src="index.js"></script>
 
 <script type="text/ng-template" id="custom-messages.html">
