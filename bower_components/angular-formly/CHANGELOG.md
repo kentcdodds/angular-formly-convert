@@ -1,20 +1,66 @@
-Version numbers correspond to `bower.json` version
-
-# 3.0.0 (Unpublished)
+# 3.0.6
 
 ## Backward compatible changes and new features
 
-- all fields will now have a the `key` value default to the index of the field if it isn't given a value. This makes it much easier to reference the model in templates (instead of `model[options.key || index]` you can now simply do `mode[options.key]`.
+- Allowing validators to be specified as objects that have `expression` and `messages` on them. This is opening the way for including built-in support for `ng-messages` in the future. For now, templates can support `ng-messages` with this enhanced api. Specifying a validator the old way works just fine.
+- When a validator has a `message` property, a function is added to `options.validationMessages` which will use `formlyUtil.formlyEval` to evaluate the message expression to get the value for the message.
+
+# 3.0.5
+
+## Backward compatible changes and new features
+
+- The `ngModelAttrsManipulator` pre-wrapper `templateManipulator` now adds more invoked attributes (like `ng-blur` etc). More can be specified with `data.ngModelInvokedAttributes`.
+- Adding `options.modelOptions` to the list of things that will be auto-added to the `ng-model` element if it exists. Woot! When `options.modelOptions.getterSetter` is set to true, then it will change the `ng-model` value to `options.value` which is the getter setter every field gets.
+
+## Bug Fixes
+
+- The `ngModelAttrsManipulator` used to simply bind the `ng-click` to the `templateOptions.onClick` which wouldn't actually do anything. The new invoked attributes now actually invokes the expression.
+
+# 3.0.4
+
+## Backward compatible changes and new features
+
+- Adding `controller` and `link` functions to both the field types and the field configs. You can now specify specific behaviors for components without the need to create an entire directive for it. Pretty neat huh? :-)
+
+# 3.0.3
+
+## Backward compatible changes and new features
+
+- Adding optional `no-ng-form` attribute to the `formly-form`.
+
+# 3.0.2
+
+- Updated README and CHANGELOG
+
+# 3.0.1
+
+- Botched 3.0.0
+
+# 3.0.0
+
+## Backward compatible changes and new features
+
+- all fields will now have a the `key` value default to the index of the field if it isn't given a value. This makes it much easier to reference the model in templates (instead of `model[options.key || index]` you can now simply do `model[options.key]`.
 - adding an angular constant called `formlyVersion` that could be useful and stuff.
 - new feature: **Template Wrappers** are useful for templates that share many of the same things (like validation with ng-messages or labels). See README and tests for documentation
+- new feature: **formlyConfig.setType** allows you to specify a type that has a `name`, `template` OR `templateUrl`, and `wrapper(s)`.
+- `expressionProperties` can now accept promises! :D Thanks @djsmith42!
+- `formly-focus` new directive that allows you to easily add focus to a focusable element. This is for your templates primarily.
+- Any properties specified on a formly field that are not explicitly part of the api will result in an error thrown. Use `data` or `templateOptions` for custom field values.
+- **AWESOME** new feature: `formlyConfigProvider.templateManipulators`. This allows you to manipulate templates on a per-field basis prior to them being compiled. This gives you a TON of power over your templates. Game changer I'd say... :-) Currently you have `preWrapper` and `postWrapper` arrays to interact with, but I'm thinking of removing wrappers altogether in favor of this more powerful and more simple api.
+- `ngModelAttrs` new field config option. Allows you to dynamically add attributes to the `ng-model` element of a field's template. Uses `formlyConfigProvider.templateManipulators.preWrapper`
+- Adding the ability to specify default options for field types and adding the concept of a default option-only field type. Adding `optionsTypes` to the field config options for this.
 
 ## Breaking changes:
 
-- now throwing errors throughout the api to validate it is being used appropriately
+- now throwing errors throughout the api to validate it is being used appropriately.
+- removing `setTemplate` and `setTemplateUrl` in favor of the new `setType` api.
+- `expressionProperties` has been simplified and improved. No longer can you specify a `data` object. Instead you specify an expression that the result of the expression will be assigned to (uses the `$parse` service).
 
 ## Internal Changes
 
 - Adding links to all errors and warnings. Should hopefully help people resolve issues faster.
+- If you're using angular 1.3.0 and have the ability to use the `validators` pipeline, now all `validators` that are functions (rather than string expressions) run through the `$asyncValidators` pipeline because there is negligible performance implications and it simplifies the validators api because you no longer need to specify isAsync on the function.
 
 # 2.0.0
 

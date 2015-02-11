@@ -1,6 +1,6 @@
 {
   "name": "angular-formly-templates-bootstrap",
-  "version": "2.0.0",
+  "version": "3.0.1",
   "authors": [
     "Astrism <astrisms@gmail.com>"
   ],
@@ -36,14 +36,14 @@
     "mocha": "~1.21.4"
   },
   "homepage": "https://github.com/formly-js/angular-formly-templates-bootstrap",
-  "_release": "2.0.0",
+  "_release": "3.0.1",
   "_resolution": {
     "type": "version",
-    "tag": "2.0.0",
-    "commit": "d9b7ee2adcec4aada432327e6b07e0df8b66a2b5"
+    "tag": "3.0.1",
+    "commit": "28c214d1fdaafee142b66c735ede62eca9a0d0f1"
   },
   "_source": "git://github.com/formly-js/angular-formly-templates-bootstrap.git",
-  "_target": "~2.0.0",
+  "_target": "~3.0.1",
   "_originalSource": "angular-formly-templates-bootstrap",
   "_direct": true
 }

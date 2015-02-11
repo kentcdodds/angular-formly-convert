@@ -1,5 +1,6 @@
 {
   "name": "angular-formly",
+  "version": "3.0.6",
   "authors": [
     "Astrism <astrisms@gmail.com>"
   ],
@@ -29,13 +30,14 @@
     "angular": "~1.3.5"
   },
   "homepage": "https://github.com/formly-js/angular-formly",
-  "_release": "aa2445af05",
+  "_release": "3.0.6",
   "_resolution": {
-    "type": "commit",
-    "commit": "aa2445af05803ace260db50a0380d27e68b2b099"
+    "type": "version",
+    "tag": "3.0.6",
+    "commit": "da30f65a6f92b45361022aec3aeb4d24dbf3fe4c"
   },
   "_source": "git://github.com/formly-js/angular-formly.git",
-  "_target": "aa2445af05803ace260db50a0380d27e68b2b099",
-  "_originalSource": "formly-js/angular-formly",
+  "_target": "~3.0.6",
+  "_originalSource": "angular-formly",
   "_direct": true
 }

@@ -9,7 +9,28 @@ module.exports = ngModule => {
     var currentFormId = 1;
     return {
       restrict: 'E',
-      template: require('./formly-form.html'),
+      template: function(el, attrs) {
+        /* jshint -W033 */ // this because jshint is broken I guess...
+        var rootEl = attrs.hasOwnProperty('noNgForm') ? 'div' : 'ng-form';
+        return `
+          <${rootEl} class="formly"
+                   name="form"
+                   role="form">
+            <div formly-field
+                 ng-repeat="field in fields track by $index"
+                 ng-if="!field.hide"
+                 class="formly-field {{field.type ? 'formly-field-' + field.type : ''}}"
+                 options="field"
+                 model="field.model || model"
+                 fields="fields"
+                 form="form"
+                 form-id="formId"
+                 index="$index">
+            </div>
+            <div ng-transclude></div>
+          </${rootEl}>
+        `;
+      },
       replace: true,
       transclude: true,
       scope: {
@@ -103,6 +124,7 @@ module.exports = ngModule => {
             'The "name" attribute on a formly-form is no longer valid. Use "form" instead'
           );
         }
+        // enforce the model attribute because we're making it optional to help with migrations
         if (!attrs.hasOwnProperty('model') || !scope.model) {
           throw formlyUsability.getFormlyError(
             'The "model" attribute is required on a formly-form.'

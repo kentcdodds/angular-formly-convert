@@ -1,9 +1,8 @@
 module.exports = ngModule => {
-  describe('formly-form', function () {
+  describe('formly-form', () => {
     beforeEach(window.module(ngModule.name));
-
-    it('should have tests in the future', function () {
-      expect(false).to.be.false;
+    it('should be tested in the future', () => {
+      expect(true).to.be.true;
     });
   });
 };

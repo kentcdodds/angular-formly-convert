@@ -4,112 +4,111 @@
   <meta charset="UTF-8">
   <title>From HTML to Formly</title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
-  <style>
-    .my-messages {
-      position: relative;
-    }
+  <link rel="stylesheet" href="index.css"/>
 
-    .some-message {
-      color: #a94442;
-      position: absolute;
-      opacity: 1;
-      transition: .3s linear all;
-      font-size: .8em;
-    }
-
-    .some-message.ng-enter.ng-enter-active {
-      opacity: 1;
-      top: 0;
-    }
-
-    .some-message.ng-enter {
-      opacity: 0;
-      top: -20px;
-    }
-
-    .some-message.ng-leave {
-      opacity: 1;
-      top: 0;
-    }
-
-    .some-message.ng-leave-active {
-      opacity: 0;
-      top: -20px;
-    }
-  </style>
 </head>
 <body ng-app="app" ng-controller="MainCtrl as vm">
-<div class="container">
-  <h1>
+<div class="jumbotron">
+  <h1 ng-click="vm.showSecretStuff = !vm.showSecretStuff">
     From HTML to Formly
     <br/>
     <small>
-      A story of happiness and glee ~=[,,_,,]:3
+      Bringing Jedi powers to forms (._.) ~ ︵ ┻━┻
     </small>
   </h1>
-  <hr/>
+</div>
+<div class="container ng-cloak">
+
+  <div ng-if="vm.showSecretStuff">
+    <h2>Super secret controls</h2>
+    <button class="btn btn-info" ng-click="vm.autofill()">Auto fill</button>
+    <button class="btn btn-danger" ng-click="vm.reset()">Reset form</button>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="vm.rememberInput" ng-change="vm.rememberInputChanged(vm.rememberInput)"/>
+        Remember input on reload?
+      </label>
+    </div>
+    <hr/>
+  </div>
 
   <div>
-    <h2>Form</h2>
+    <h2>Lightsaber order Form</h2>
     <form name="vm.userForm" ng-submit="vm.onSubmit(vm.user)">
       <div class="form-group" has-error="vm.userForm.firstName">
-        <label for="firstName">First Name</label>
+        <label for="firstName">First Name *</label>
         <input type="text" ng-model="vm.user.firstName" name="firstName" class="form-control" id="firstName" placeholder="First Name" required>
         <div my-messages="vm.userForm.firstName"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.lastName">
-        <label for="lastName">Last Name</label>
+        <label for="lastName">Last Name *</label>
         <input type="text" ng-model="vm.user.lastName" name="lastName" class="form-control" id="lastName" placeholder="Last Name" required>
         <div my-messages="vm.userForm.lastName"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.email">
-        <label for="emailAddress">Email Address</label>
+        <label for="emailAddress">Email Address *</label>
         <input type="email" ng-model="vm.user.email" name="email" class="form-control" id="emailAddress" placeholder="Email address" required>
         <div my-messages="vm.userForm.email"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.confirmEmail">
-        <label for="emailAddressConfirm">Confirm Email Address</label>
+        <label for="emailAddressConfirm">Confirm Email Address *</label>
         <input type="email" ng-model="vm.user.confirmEmail" name="confirmEmail" must-match="vm.user.email" class="form-control" id="emailAddressConfirm" placeholder="Confirm Email address" required>
         <div my-messages="vm.userForm.confirmEmail"></div>
       </div>
-      <div class="form-group" has-error="vm.userForm.password">
-        <label for="password">Password</label>
-        <input type="password" ng-model="vm.user.password" name="password" class="form-control" id="password" placeholder="Password" required>
-        <div my-messages="vm.userForm.password"></div>
+      <div class="form-group" has-error="vm.userForm.streetAddress">
+        <label for="streetAddress">Street Address *</label>
+        <textarea ng-model="vm.user.streetAddress" name="streetAddress" class="form-control" id="streetAddress" placeholder="Street Address" required></textarea>
+        <div my-messages="vm.userForm.streetAddress"></div>
       </div>
-      <div class="form-group" has-error="vm.userForm.confirmPassword">
-        <label for="passwordConfirm">Confirm Password</label>
-        <input type="password" ng-model="vm.user.confirmPassword" must-match="vm.user.password" class="form-control" id="passwordConfirm" placeholder="Password" required>
-        <div my-messages="vm.userForm.confirmPassword"></div>
+      <div class="form-group" has-error="vm.userForm.planet">
+        <label for="planet">Planet *</label>
+        <select class="form-control" id="planet" name="planet" ng-model="vm.user.planet"
+          ng-options="item for item in vm.planets" required>
+        </select>
+        <div my-messages="vm.userForm.planet"></div>
+      </div>
+      <div class="form-group" has-error="vm.userForm.postalCode">
+        <label for="postalCode">Postal Code *</label>
+        <input type="number" ng-model="vm.user.postalCode" name="postalCode" class="form-control" id="postalCode" placeholder="Postal Code" required>
+        <div my-messages="vm.userForm.postalCode"></div>
       </div>
       <div class="radio-group" has-error="vm.userForm.genderRadios">
-        <label>Your Gender?</label>
+        <label>Your Gender? *</label>
         <div class="radio">
           <label>
-            <input type="radio" ng-model="vm.user.model" name="genderRadios" id="genderRadios1" value="male" required>
+            <input type="radio" ng-model="vm.user.gender" name="genderRadios" id="genderRadios1" value="male" required tabindex="0">
             Male
-          </label>
+           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" ng-model="vm.user.model" name="genderRadios" id="genderRadios2" value="female" required>
+            <input type="radio" ng-model="vm.user.gender" name="genderRadios" id="genderRadios2" value="female" required>
             Female
-          </label>
+           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" ng-model="vm.user.model" name="genderRadios" id="genderRadios3" value="unspecified" required>
+            <input type="radio" ng-model="vm.user.gender" name="genderRadios" id="genderRadios3" value="unspecified" required>
             Prefer not to say
-          </label>
+           </label>
         </div>
         <div my-messages="vm.userForm.genderRadios"></div>
+      </div>
+      <div class="form-group">
+        <label for="lightsaber">
+          Favorite Lightsaber Color?
+        </label>
+        <select class="form-control" id="lightsaber" ng-model="vm.user.colorPreference"
+                ng-options="item for item in vm.lightsaberColors">
+        </select>
       </div>
       <div class="checkbox" has-error="vm.userForm.agree">
         <label>
           <input type="checkbox" name="agree" ng-model="vm.user.agree" required> Do you sign your soul away to our TOS?
-        </label>
+         *</label>
         <div my-messages="vm.userForm.agree"></div>
       </div>
+      <br/>
       <button type="submit" class="btn btn-default" ng-disabled="vm.userForm.$invalid">Submit</button>
     </form>
   </div>
@@ -129,58 +128,10 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-messages/angular-messages.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
-<script>
-  var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria']);
-  app.controller('MainCtrl', function() {
-    var vm = this;
-    vm.user = {};
-
-    vm.onSubmit = onSubmit;
-
-    function onSubmit(user) {
-      alert(angular.toJson(user, 2));
-    }
-  });
-
-  app.directive('mustMatch', function() {
-    return {
-      require: 'ngModel',
-      link: function(scope, el, attrs, ctrl) {
-        ctrl.$validators.matches = matches;
-
-        function matches(modelValue, viewValue) {
-          var value = modelValue || viewValue;
-          return value === scope.$eval(attrs.mustMatch);
-        }
-      }
-    }
-  });
-
-  app.directive('myMessages', function() {
-    return {
-      templateUrl: 'custom-messages.html',
-      scope: {field: '=myMessages'}
-    }
-  });
-
-  app.directive('hasError', function() {
-    return function(scope, el, attrs) {
-      scope.$watch(attrs.hasError + '.$error', function(errors) {
-        if (!scope.$eval(attrs.hasError + '.$touched')) {
-          return;
-        }
-        if (errors && Object.keys(errors).length) {
-          el.addClass('has-error');
-        } else {
-          el.removeClass('has-error');
-        }
-      }, true);
-    }
-  });
-</script>
+<script src="index.js"></script>
 
 <script type="text/ng-template" id="custom-messages.html">
-  <div class="my-messages" ng-messages="field.$error">
+    <div class="my-messages" ng-messages="field.$error" ng-if="field.$touched">
     <div class="some-message" ng-message="required">This field is required</div>
     <div class="some-message" ng-message="minlength">Input too short</div>
     <div class="some-message" ng-message="email">This field must be an email</div>

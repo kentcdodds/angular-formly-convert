@@ -18,14 +18,14 @@
         </span>
       </div>
       <div class="text-muted +margin-top-small">
-        Latest (unpublished) Version: {{::vm.formlyVersion}}
+        Latest Version: {{::vm.formlyVersion}}
       </div>
       <hr/>
       <div class="formly-examples">
         <div class="formly-example" ng-repeat="category in vm.examples track by $index">
           <strong>{{::category.title}}</strong>
           <div ng-repeat="example in category.examples | filter:vm.search track by $index">
-            <a formly-event-navigate="exampleSelected(example)" ng-href="#/{{example.jsbinId}}">{{example.title}}</a>
+            <a class="example-link" formly-event-navigate="exampleSelected(example)" ng-class="vm.exampleClass(example)">{{example.title}}</a>
           </div>
           <hr/>
         </div>

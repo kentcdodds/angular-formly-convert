@@ -76,10 +76,15 @@ var prodConfig = {
         warnings: false
       }
     })
-  ]
+  ],
+  jshint: {
+    failOnHint: true,
+    emitErrors: true
+  }
 };
 
 var testConfig = deepExtend({}, prodConfig);
+delete testConfig.jshint;
 
 var envContexts = {
   dev: {

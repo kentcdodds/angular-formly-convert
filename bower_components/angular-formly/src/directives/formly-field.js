@@ -17,43 +17,32 @@ module.exports = ngModule => {
         fields: '=?',
         form: '=?'
       },
-      controller: function fieldController($scope, $interval) {
+      controller: function fieldController($scope, $interval, $parse, $controller) {
+        var opts = $scope.options;
+        var fieldType = opts.type && formlyConfig.getType(opts.type);
+        simplifyLife(opts);
+        mergeFieldOptionsWithTypeDefaults(opts, fieldType);
+        apiCheck(opts);
         // set field id to link labels and fields
-        $scope.id = formlyUtil.getFieldId($scope.formId, $scope.options, $scope.index);
-
-        angular.extend($scope.options, {
-          // attach the key in case the formly-field directive is used directly
-          key: $scope.options.key || $scope.index || 0,
-          value: valueGetterSetter,
-          runExpressions: runExpressions,
-          modelOptions: {
-            getterSetter: true,
-            allowInvalid: true
-          }
-        });
+        $scope.id = formlyUtil.getFieldId($scope.formId, opts, $scope.index);
 
         // initalization
+        extendOptionsWithDefaults(opts, $scope.index);
         runExpressions();
-        if (!$scope.options.noFormControl) {
-          setFormControl();
-        }
-        if ($scope.options.model) {
-          $scope.$watch('options.model', runExpressions, true);
-        }
+        setFormControl($scope, opts, $interval);
+        addModelWatcher($scope, opts);
+        invokeControllers($scope, opts, fieldType);
 
         // function definitions
         function runExpressions() {
           var field = $scope.options;
           var currentValue = valueGetterSetter();
           angular.forEach(field.expressionProperties, function runExpression(expression, prop) {
-            if (prop !== 'data') {
-              field[prop] = formlyUtil.formlyEval($scope, expression, currentValue);
-            } else {
-              field.data = field.data || {};
-              angular.forEach(field.expressionProperties.data, function runExpression(dataExpression, dataProp) {
-                field.data[dataProp] = formlyUtil.formlyEval($scope, dataExpression, currentValue);
-              });
-            }
+            var setter = $parse(prop).assign;
+            var promise = $q.when(formlyUtil.formlyEval($scope, expression, currentValue));
+            promise.then(function(value) {
+              setter(field, value);
+            });
           });
         }
 
@@ -67,46 +56,132 @@ module.exports = ngModule => {
           return $scope.model[$scope.options.key];
         }
 
-        function setFormControl() {
+        function simplifyLife(options) {
+          // add data and templateOptions as empty objects so you don't have to undefined check everywhere
+          formlyUtil.reverseDeepMerge(options, {
+            data: {},
+            templateOptions: {}
+          });
+        }
+
+        function mergeFieldOptionsWithTypeDefaults(options, type) {
+          if (type) {
+            mergeOptions(options, type.defaultOptions);
+          }
+          var properOrder = arrayify(options.optionsTypes).reverse(); // so the right things are overridden
+          angular.forEach(properOrder, typeName => {
+            mergeOptions(options, formlyConfig.getType(typeName, true, options).defaultOptions);
+          });
+        }
+
+        function mergeOptions(options, extraOptions) {
+          if (extraOptions) {
+            if (angular.isFunction(extraOptions)) {
+              extraOptions = extraOptions(options);
+            }
+            formlyUtil.reverseDeepMerge(options, extraOptions);
+          }
+        }
+
+        function extendOptionsWithDefaults(options, index) {
+          angular.extend(options, {
+            // attach the key in case the formly-field directive is used directly
+            key: options.key || index || 0,
+            value: valueGetterSetter,
+            runExpressions: runExpressions
+          });
+        }
+
+        // initialization functions
+        function setFormControl(scope, options, $interval) {
+          if (options.noFormControl) {
+            return;
+          }
           var stopWaitingForDestroy;
           var maxTime = 2000;
           var intervalTime = 5;
           var iterations = 0;
           var interval = $interval(function() {
             iterations++;
-            if (!angular.isDefined($scope.options.key)) {
+            if (!angular.isDefined(options.key)) {
               return cleanUp();
             }
-            var formControl = $scope.form && $scope.form[$scope.id];
+            var formControl = scope.form && scope.form[scope.id];
             if (formControl) {
-              $scope.options.formControl = formControl;
+              options.formControl = formControl;
               cleanUp();
             } else if (intervalTime * iterations > maxTime) {
               formlyWarn(
                 'couldnt-set-the-formcontrol-after-timems',
                 `Couldn't set the formControl after ${maxTime}ms`,
-                $scope
+                scope
               );
               cleanUp();
             }
           }, intervalTime);
-          stopWaitingForDestroy = $scope.$on('$destroy', cleanUp);
+          stopWaitingForDestroy = scope.$on('$destroy', cleanUp);
 
           function cleanUp() {
             stopWaitingForDestroy();
             $interval.cancel(interval);
           }
         }
+
+        function addModelWatcher(scope, options) {
+          if (options.model) {
+            scope.$watch('options.model', runExpressions, true);
+          }
+        }
+
+        function invokeControllers(scope, options = {}, type = {}) {
+          angular.forEach([type.controller, options.controller], controller => {
+            if (controller) {
+              $controller(controller, {$scope: scope});
+            }
+          });
+        }
       },
       link: function fieldLink(scope, el) {
-        apiCheck(scope.options);
-        getTemplate(scope.options)
-          .then(transcludeInWrapper(scope.options))
-          .then(setElementTemplate);
+        var type = scope.options.type && formlyConfig.getType(scope.options.type);
+        var args = arguments;
+        var thusly = this;
+        getFieldTemplate(scope.options)
+          .then(runManipulators(formlyConfig.templateManipulators.preWrapper))
+          .then(transcludeInWrappers(scope.options))
+          .then(runManipulators(formlyConfig.templateManipulators.postWrapper))
+          .then(setElementTemplate)
+          .catch(error => {
+            formlyWarn(
+              'there-was-a-problem-setting-the-template-for-this-field',
+              'There was a problem setting the template for this field ',
+              scope.options,
+              error
+            );
+          });
 
         function setElementTemplate(templateEl) {
           el.html(asHtml(templateEl));
           $compile(el.contents())(scope);
+          if (type && type.link) {
+            type.link.apply(thusly, args);
+          }
+          if (scope.options.link) {
+            scope.options.link.apply(thusly, args);
+          }
+        }
+
+        function runManipulators(manipulators) {
+          return function runManipulatorsOnTemplate(template) {
+            var chain = $q.when(template);
+            angular.forEach(manipulators, manipulator => {
+              chain = chain.then(template => {
+                return $q.when(manipulator(template, scope.options, scope)).then(newTemplate => {
+                  return angular.isString(newTemplate) ? newTemplate : asHtml(newTemplate);
+                });
+              });
+            });
+            return chain;
+          };
         }
       }
     };
@@ -116,82 +191,111 @@ module.exports = ngModule => {
       return wrapper.append(el).html();
     }
 
-
-    function getTemplate(options) {
-      let template = options.template || formlyConfig.getTemplate(options.type);
-      let templateUrl = options.templateUrl || formlyConfig.getTemplateUrl(options.type);
-      if (template) {
-        return $q.when(template);
-      } else if (templateUrl) {
-        let httpOptions = {cache: $templateCache};
-        return $http.get(templateUrl, httpOptions).then(function(response) {
-          return response.data;
-        }).catch(function(error) {
-          formlyWarn(
-            'problem-loading-template-for-templateurl',
-            'Problem loading template for ' + templateUrl,
-            error
-          );
-        });
-      } else {
+    function getFieldTemplate(options) {
+      let type = formlyConfig.getType(options.type, true, options);
+      let template = options.template || type && type.template;
+      let templateUrl = options.templateUrl || type && type.templateUrl;
+      if (!template && !templateUrl) {
         throw formlyUsability.getFieldError(
           'template-type-type-not-supported',
           `template type '${options.type}' not supported. On element:`, options
         );
       }
+      return getTemplate(template || templateUrl, !template);
     }
 
-    function transcludeInWrapper(options) {
-      let templateWrapper = getTemplateWrapperOption(options);
+
+    function getTemplate(template, isUrl) {
+      if (!isUrl) {
+        return $q.when(template);
+      } else {
+        let httpOptions = {cache: $templateCache};
+        return $http.get(template, httpOptions).then(function(response) {
+          return response.data;
+        }).catch(function(error) {
+          formlyWarn(
+            'problem-loading-template-for-templateurl',
+            'Problem loading template for ' + template,
+            error
+          );
+        });
+      }
+    }
+
+    function transcludeInWrappers(options) {
+      let wrapper = getWrapperOption(options);
 
       return function transcludeTemplate(template) {
-        if (!templateWrapper) {
-          return $q.when(angular.element(template));
-        }
-        formlyUsability.checkWrapper(templateWrapper);
-        if (templateWrapper.template) {
-          formlyUsability.checkWrapperTemplate(templateWrapper.template, templateWrapper);
-          return $q.when(doTransclusion(templateWrapper.template));
+        if (!wrapper) {
+          return $q.when(template);
+        } else if (angular.isArray(wrapper)) {
+          wrapper.forEach(formlyUsability.checkWrapper);
+          let promises = wrapper.map(w => getTemplate(w.template || w.templateUrl, !w.template));
+          return $q.all(promises).then(wrappersTemplates => {
+            wrappersTemplates.forEach((wrapperTemplate, index) => {
+              formlyUsability.checkWrapperTemplate(wrapperTemplate, wrapper[index]);
+            });
+            wrappersTemplates.reverse(); // wrapper 0 is wrapped in wrapper 1 and so on...
+            let totalWrapper = wrappersTemplates.shift();
+            wrappersTemplates.forEach(wrapperTemplate => {
+              totalWrapper = doTransclusion(totalWrapper, wrapperTemplate);
+            });
+            return doTransclusion(totalWrapper, template);
+          });
         } else {
-          let httpOptions = {cache: $templateCache};
-          return $http.get(templateWrapper.url, httpOptions).then(function(response) {
-            let wrapper = response.data;
-            formlyUsability.checkWrapperTemplate(wrapper, templateWrapper);
-            return doTransclusion(wrapper);
-          }).catch(function(error) {
-            formlyWarn(
-              'proplem-loading-template-for-wrapper',
-              'Problem loading template for wrapper' + JSON.stringify(templateWrapper),
-              error
-            );
+          formlyUsability.checkWrapper(wrapper);
+          let t = wrapper.template || wrapper.templateUrl;
+          return getTemplate(t, !wrapper.template).then(function(wrapperTemplate) {
+            formlyUsability.checkWrapperTemplate(wrapperTemplate, wrapper);
+            return doTransclusion(wrapperTemplate, template);
           });
         }
 
-        function doTransclusion(wrapper) {
-          let wrapperEl = angular.element(wrapper);
-          let transcludeEl = wrapperEl.find('formly-transclude');
-          transcludeEl.replaceWith(template);
-          return wrapperEl;
-        }
       };
     }
 
-    function getTemplateWrapperOption(options) {
-      /* jshint maxcomplexity:6 */
+    function doTransclusion(wrapper, template) {
+      let superWrapper = angular.element('<a></a>'); // this allows people not have to have a single root in wrappers
+      superWrapper.append(wrapper);
+      let transcludeEl = superWrapper.find('formly-transclude');
+      transcludeEl.replaceWith(template);
+      return superWrapper.html();
+    }
+
+    function getWrapperOption(options) {
+      /* jshint maxcomplexity:9 */
       let templateOption = options.wrapper;
       // explicit null means no wrapper
       if (templateOption === null) {
         return '';
       }
-      var templateWrapper = templateOption;
+      var wrapper = templateOption;
       // nothing specified means use the default wrapper for the type
       if (!templateOption) {
-        templateWrapper = formlyConfig.getTemplateWrapperByType(options.type) || formlyConfig.getTemplateWrapper();
-      } else if (typeof templateOption === 'string') {
+        wrapper = formlyConfig.getWrapperByType(options.type);
+      } else if (angular.isString(templateOption)) {
         // string means it's a type
-        templateWrapper = formlyConfig.getTemplateWrapper(templateOption);
+        wrapper = formlyConfig.getWrapper(templateOption);
+      } else if (angular.isArray(templateOption)) {
+        // array means wrap the wrappers
+        wrapper = templateOption.map(wrapperName => formlyConfig.getWrapper(wrapperName));
       }
-      return templateWrapper;
+      wrapper = arrayify(wrapper);
+      var defaultWrapper = formlyConfig.getWrapper();
+      var type = formlyConfig.getType(options.type, true, options);
+      if (type && type.wrapper) {
+        let typeWrappers = arrayify(type.wrapper).map(formlyConfig.getWrapper);
+        wrapper = wrapper.concat(typeWrappers);
+      }
+      if (defaultWrapper) {
+        wrapper.push(defaultWrapper);
+      }
+      if (wrapper.length > 1) {
+        return wrapper;
+      } else if (wrapper.length === 1) {
+        return wrapper[0];
+      }
+      // otherwise return nothing
     }
 
     function apiCheck(options) {
@@ -208,6 +312,25 @@ module.exports = ngModule => {
         );
       }
 
+      // check that only allowed properties are provided
+      var allowedProperties = [
+        'type', 'template', 'templateUrl', 'key', 'model',
+        'expressionProperties', 'data', 'templateOptions',
+        'wrapper', 'modelOptions', 'watcher', 'validators',
+        'noFormControl', 'hide', 'ngModelAttrs', 'optionsTypes',
+        'link', 'controller',
+        // things we add to the field after the fact are ok
+        'validationMessages', 'formControl', 'value', 'runExpressions'
+      ];
+      var extraProps = Object.keys(options).filter(prop => allowedProperties.indexOf(prop) === -1);
+      if (extraProps.length) {
+        throw formlyUsability.getFieldError(
+          'you-have-specified-field-properties-that-are-not-allowed',
+          `You have specified field properties that are not allowed: ${JSON.stringify(extraProps.join(', '))}`,
+          options
+        );
+      }
+
       function getTemplateOptionsCount(options) {
         let templateOptions = 0;
         templateOptions += angular.isDefined(options.template) ? 1 : 0;
@@ -216,5 +339,15 @@ module.exports = ngModule => {
         return templateOptions;
       }
     }
+
+  }
+
+  function arrayify(obj) {
+    if (obj && !angular.isArray(obj)) {
+      obj = [obj];
+    } else if (!obj) {
+      obj = [];
+    }
+    return obj;
   }
 };

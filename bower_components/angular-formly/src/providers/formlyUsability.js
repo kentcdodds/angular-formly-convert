@@ -12,6 +12,11 @@ module.exports = ngModule => {
     });
 
     function getFieldError(errorInfoSlug, message, field) {
+      if (arguments.length < 3) {
+        field = message;
+        message = errorInfoSlug;
+        errorInfoSlug = null;
+      }
       return new Error(getErrorMessage(errorInfoSlug, message) + ` Field definition: ${angular.toJson(field)}`);
     }
 
@@ -32,15 +37,15 @@ module.exports = ngModule => {
     }
 
     function checkWrapper(wrapper) {
-      if (wrapper.template && wrapper.url) {
+      if (wrapper.template && wrapper.templateUrl) {
         throw getFormlyError(
-          'Template wrappers can only have a url or a template. ' +
+          'Template wrappers can only have a templateUrl or a template. ' +
           `This one provided both: ${JSON.stringify(wrapper)}`
         );
       }
-      if (!wrapper.template && !wrapper.url) {
+      if (!wrapper.template && !wrapper.templateUrl) {
         throw getFormlyError(
-          'Template wrappers must have one of a url or a template. ' +
+          'Template wrappers must have one of a templateUrl or a template. ' +
           `This one provided neither: ${JSON.stringify(wrapper)}`
         );
       }
