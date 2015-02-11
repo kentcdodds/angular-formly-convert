@@ -63,7 +63,7 @@
       <div class="form-group" has-error="vm.userForm.planet">
         <label for="planet">Planet *</label>
         <select class="form-control" id="planet" name="planet" ng-model="vm.user.planet"
-          ng-options="item for item in vm.planets" required>
+          ng-options="item.value as item.name for item in vm.planets" required>
         </select>
         <div my-messages="vm.userForm.planet"></div>
       </div>
@@ -99,7 +99,7 @@
           Favorite Lightsaber Color?
         </label>
         <select class="form-control" id="lightsaber" ng-model="vm.user.colorPreference"
-                ng-options="item for item in vm.lightsaberColors">
+                ng-options="item.value as item.name for item in vm.lightsaberColors">
         </select>
       </div>
       <div class="checkbox" has-error="vm.userForm.agree">
