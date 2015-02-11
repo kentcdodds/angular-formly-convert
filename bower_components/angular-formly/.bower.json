@@ -1,6 +1,6 @@
 {
   "name": "angular-formly",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "authors": [
     "Astrism <astrisms@gmail.com>"
   ],
@@ -19,25 +19,35 @@
   ],
   "license": "MIT",
   "ignore": [
-    "**/.*",
     "node_modules",
-    "tests"
+    "tests",
+    "demo",
+    "local-examples",
+    "loaders",
+    ".editorconfig",
+    ".gitignore",
+    ".jshintrc",
+    "CONTRIBUTING.md",
+    "Gruntfile.js",
+    "karma.conf.ci.js",
+    "karma.conf.js",
+    "src",
+    "webpack.config.js",
+    "webpack.config.minify.js",
+    "coverage"
   ],
   "dependencies": {
     "angular": "~1.2.22"
   },
-  "resolutions": {
-    "angular": "~1.3.5"
-  },
   "homepage": "https://github.com/formly-js/angular-formly",
-  "_release": "3.0.7",
+  "_release": "3.0.8",
   "_resolution": {
     "type": "version",
-    "tag": "3.0.7",
-    "commit": "e651d2d30dbce1ef97b1e6d0f9efe39a654f2362"
+    "tag": "3.0.8",
+    "commit": "13412bd13021ebdece1fd3dc2d1dc847816325e2"
   },
   "_source": "git://github.com/formly-js/angular-formly.git",
-  "_target": "~3.0.7",
+  "_target": "~3.0.8",
   "_originalSource": "angular-formly",
   "_direct": true
 }
