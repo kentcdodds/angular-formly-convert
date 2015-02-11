@@ -92,7 +92,6 @@ app.directive('myMessages', function() {
 
 app.directive('hasError', function() {
   return function(scope, el, attrs) {
-    var formControl = scope.$eval(attrs.hasError);
     scope.$watch(attrs.hasError + '.$invalid && ' + attrs.hasError + '.$touched', function(show) {
       if (show) {
         el.addClass('has-error');
