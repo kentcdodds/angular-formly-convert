@@ -22,7 +22,6 @@ body {
 .my-messages, .some-message {
   opacity: 1;
   transition: .3s linear all;
-  top: -8px;
 }
 
 .some-message {
@@ -35,23 +34,23 @@ body {
 .my-messages.ng-enter.ng-enter-active,
 .some-message.ng-enter.ng-enter-active {
   opacity: 1;
-  top: -8px;
+  top: 0;
 }
 
 .my-messages.ng-enter,
 .some-message.ng-enter {
   opacity: 0;
-  top: -18px;
+  top: -10px;
 }
 
 .my-messages.ng-leave,
 .some-message.ng-leave {
   opacity: 1;
-  top: -8px;
+  top: 0;
 }
 
 .my-messages.ng-leave-active,
 .some-message.ng-leave-active {
   opacity: 0;
-  top: -18px;
+  top: -10px;
 }

@@ -3,7 +3,7 @@ var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 
 app.run(function(formlyConfig) {
   formlyConfig.setWrapper({
     template: '<formly-transclude></formly-transclude><div my-messages="options"></div>',
-    type: ['input', 'checkbox', 'select', 'textarea', 'radio']
+    types: ['input', 'checkbox', 'select', 'textarea', 'radio']
   });
 });
 
