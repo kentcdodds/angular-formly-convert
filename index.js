@@ -1,5 +1,12 @@
 var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
 
+app.run(function(formlyConfig) {
+  formlyConfig.setWrapper({
+    template: '<formly-transclude></formly-transclude><div my-messages="options"></div>',
+    type: ['input', 'checkbox', 'select', 'textarea', 'radio']
+  });
+});
+
 app.controller('MainCtrl', function($scope, planets, $window) {
   var vm = this;
   var store = $window.localStorage;
@@ -30,8 +37,7 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       key: 'lastName',
       templateOptions: {
         label: 'Last Name',
-        required: true,
-        placeholder: 'Last Name'
+        required: true
       }
     },
     {
@@ -52,6 +58,18 @@ app.controller('MainCtrl', function($scope, planets, $window) {
         label: 'Confirm Email Address',
         required: true,
         placeholder: 'Confirm Email Address'
+      },
+      validators: {
+        matchesBetter: {
+          expression: '$viewValue === model.email',
+          message: '$viewValue + " is not " + model.email'
+        }
+      },
+      watcher: {
+        expression: 'model.email',
+        listener: function(field) {
+          field.formControl && field.formControl.$validate();
+        }
       }
     },
     {
@@ -189,7 +207,7 @@ app.directive('mustMatch', function() {
 app.directive('myMessages', function() {
   return {
     templateUrl: 'custom-messages.html',
-    scope: {field: '=myMessages'}
+    scope: {options: '=myMessages'}
   }
 });
 
