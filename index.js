@@ -12,6 +12,24 @@ app.run(function(formlyConfig) {
     template: '<div>ngInput: <input type="text" ng-model="model[options.key]" class="form-control" /></div>',
     wrapper: ['bootstrapLabel', 'validationWrapper', 'bootstrapHasError']
   });
+
+  formlyConfig.setType({
+    name: 'ipAddress',
+    defaultOptions: {
+      templateOptions: {
+        label: 'IP Address',
+        placeholder: '999.999.999.999'
+      },
+      validators: {
+        ipAddress: {
+          expression: function(viewValue, modelValue) {
+            return /^(\d{1,3}.){3}\d{1,3}$/.test(modelValue || viewValue || '');
+          },
+          message: '"Enter valid IP Address"'
+        }
+      }
+    }
+  });
 });
 
 app.controller('MainCtrl', function($scope, planets, $window) {
@@ -46,6 +64,11 @@ app.controller('MainCtrl', function($scope, planets, $window) {
         label: 'Last Name',
         required: true
       }
+    },
+    {
+      type: 'input',
+      optionsTypes: ['ipAddress'],
+      key: 'ipAddress'
     },
     {
       type: 'input',
