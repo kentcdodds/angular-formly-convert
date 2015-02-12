@@ -3,7 +3,14 @@ var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 
 app.run(function(formlyConfig) {
   formlyConfig.setWrapper({
     template: '<formly-transclude></formly-transclude><div my-messages="options"></div>',
-    types: ['input', 'checkbox', 'select', 'textarea', 'radio']
+    types: ['input', 'checkbox', 'select', 'textarea', 'radio'],
+    name: 'validationWrapper'
+  });
+
+  formlyConfig.setType({
+    name: 'nlInput',
+    template: '<div>ngInput: <input type="text" ng-model="model[options.key]" class="form-control" /></div>',
+    wrapper: ['bootstrapLabel', 'validationWrapper', 'bootstrapHasError']
   });
 });
 
@@ -33,7 +40,7 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       }
     },
     {
-      type: 'input',
+      type: 'nlInput',
       key: 'lastName',
       templateOptions: {
         label: 'Last Name',
