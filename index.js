@@ -106,7 +106,8 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       type: 'checkbox',
       key: 'agree',
       templateOptions: {
-        label: 'Do you sign your soul away to our TOS?'
+        label: 'Do you sign your soul away to our TOS?',
+        required: true
       }
     }
   ];
