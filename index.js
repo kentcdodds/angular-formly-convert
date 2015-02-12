@@ -88,6 +88,9 @@ app.controller('MainCtrl', function($scope, planets, $window) {
         label: 'Planet',
         required: true,
         options: planets
+      },
+      expressionProperties: {
+        'templateOptions.disabled': '!model.streetAddress'
       }
     },
     {
@@ -96,8 +99,12 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       templateOptions: {
         type: 'number',
         label: 'Postal Code',
-        required: true,
         placeholder: 'Postal Code'
+      },
+      expressionProperties: {
+        'templateOptions.placeholder': function(viewValue, modelValue, scope) {
+          return scope.model.streetAddress;
+        }
       }
     },
     {
