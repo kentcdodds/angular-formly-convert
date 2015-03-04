@@ -82,7 +82,8 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       templateOptions: {
         label: 'Postal Code',
         type: 'number',
-        required: true
+        required: true,
+        pattern: '\\d{5}'
       }
     },
     {
