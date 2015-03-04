@@ -1,4 +1,12 @@
 var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
+
+app.run(function(formlyConfig) {
+  formlyConfig.setWrapper({
+    template: '<formly-transclude></formly-transclude><div my-messages="options"></div>',
+    types: ['input', 'checkbox', 'select', 'textarea', 'radio']
+  });
+});
+
 app.controller('MainCtrl', function($scope, planets, $window) {
   var vm = this;
   var store = $window.localStorage;
@@ -192,7 +200,7 @@ app.directive('mustMatch', function() {
 app.directive('myMessages', function() {
   return {
     templateUrl: 'custom-messages.html',
-    scope: {field: '=myMessages'}
+    scope: {options: '=myMessages'}
   }
 });
 

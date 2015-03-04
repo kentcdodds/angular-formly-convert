@@ -40,88 +40,6 @@
       </formly-form>
     </form>
   </div>
-
-  <div>
-    <h2>Lightsaber order Form</h2>
-    <form name="vm.userForm" ng-submit="vm.onSubmit(vm.user)">
-      <div class="form-group" has-error="vm.userForm.firstName">
-        <label for="firstName">First Name *</label>
-        <input type="text" ng-model="vm.user.firstName" name="firstName" class="form-control" id="firstName" required>
-        <div my-messages="vm.userForm.firstName"></div>
-      </div>
-      <div class="form-group" has-error="vm.userForm.lastName">
-        <label for="lastName">Last Name *</label>
-        <input type="text" ng-model="vm.user.lastName" name="lastName" class="form-control" id="lastName" required>
-        <div my-messages="vm.userForm.lastName"></div>
-      </div>
-      <div class="form-group" has-error="vm.userForm.email">
-        <label for="emailAddress">Email Address *</label>
-        <input type="email" ng-model="vm.user.email" name="email" class="form-control" id="emailAddress" required>
-        <div my-messages="vm.userForm.email"></div>
-      </div>
-      <div class="form-group" has-error="vm.userForm.confirmEmail">
-        <label for="emailAddressConfirm">Confirm Email Address *</label>
-        <input type="email" ng-model="vm.user.confirmEmail" name="confirmEmail" must-match="vm.user.email" class="form-control" id="emailAddressConfirm" required>
-        <div my-messages="vm.userForm.confirmEmail"></div>
-      </div>
-      <div class="form-group" has-error="vm.userForm.streetAddress">
-        <label for="streetAddress">Street Address *</label>
-        <textarea ng-model="vm.user.streetAddress" name="streetAddress" class="form-control" id="streetAddress" required></textarea>
-        <div my-messages="vm.userForm.streetAddress"></div>
-      </div>
-      <div class="form-group" has-error="vm.userForm.planet">
-        <label for="planet">Planet *</label>
-        <select class="form-control" id="planet" name="planet" ng-model="vm.user.planet"
-          ng-options="item.value as item.name for item in vm.planets" required>
-        </select>
-        <div my-messages="vm.userForm.planet"></div>
-      </div>
-      <div class="form-group" has-error="vm.userForm.postalCode">
-        <label for="postalCode">Postal Code *</label>
-        <input type="number" ng-model="vm.user.postalCode" name="postalCode" class="form-control" id="postalCode" required>
-        <div my-messages="vm.userForm.postalCode"></div>
-      </div>
-      <div class="radio-group" has-error="vm.userForm.genderRadios">
-        <label>Your Gender? *</label>
-        <div class="radio">
-          <label>
-            <input type="radio" ng-model="vm.user.gender" name="genderRadios" id="genderRadios1" value="male" required tabindex="0">
-            Male
-           </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input type="radio" ng-model="vm.user.gender" name="genderRadios" id="genderRadios2" value="female" required>
-            Female
-           </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input type="radio" ng-model="vm.user.gender" name="genderRadios" id="genderRadios3" value="unspecified" required>
-            Prefer not to say
-           </label>
-        </div>
-        <div my-messages="vm.userForm.genderRadios"></div>
-      </div>
-      <div class="form-group">
-        <label for="lightsaber">
-          Favorite Lightsaber Color?
-        </label>
-        <select class="form-control" id="lightsaber" ng-model="vm.user.colorPreference"
-                ng-options="item.value as item.name for item in vm.lightsaberColors">
-        </select>
-      </div>
-      <div class="checkbox" has-error="vm.userForm.agree">
-        <label>
-          <input type="checkbox" name="agree" ng-model="vm.user.agree" required> Do you sign your soul away to our TOS?
-         *</label>
-        <div my-messages="vm.userForm.agree"></div>
-      </div>
-      <br/>
-      <button type="submit" class="btn btn-default" ng-disabled="vm.userForm.$invalid">Submit</button>
-    </form>
-  </div>
-
   <hr/>
   <div>
     <h2>Model</h2>
@@ -144,12 +62,15 @@
 <script src="index.js"></script>
 
 <script type="text/ng-template" id="custom-messages.html">
-    <div class="my-messages" ng-messages="field.$error" ng-if="field.$touched">
+  <div class="my-messages" ng-messages="options.formControl.$error" ng-if="options.formControl.$touched">
     <div class="some-message" ng-message="required">This field is required</div>
     <div class="some-message" ng-message="minlength">Input too short</div>
     <div class="some-message" ng-message="email">This field must be an email</div>
     <div class="some-message" ng-message="matches">This field must match the other</div>
     <div class="some-message" ng-message="number">Must be a number</div>
+    <div class="some-message" ng-message="{{::name}}" ng-repeat="(name, message) in ::options.validation.messages">
+      {{message(options.formControl.$viewValue, options.formControl.$modelValue, this)}}
+    </div>
   </div>
 </script>
 </body>
