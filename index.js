@@ -69,6 +69,12 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       expressionProperties: {
         'templateOptions.disabled': '!model.email',
         'templateOptions.placeholder': '!model.email ? "Please specify an email address" : ""'
+      },
+      validators: {
+        mustMatch: {
+          expression: '($modelValue || $viewValue) === model.email',
+          message: '$viewValue + " does not equal " + model.email'
+        }
       }
     },
     {
