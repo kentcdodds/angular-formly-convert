@@ -57,6 +57,10 @@ app.controller('MainCtrl', function($scope, planets, $window) {
         label: 'Confirm Email Address',
         type: 'email',
         required: true
+      },
+      expressionProperties: {
+        'templateOptions.disabled': '!model.email',
+        'templateOptions.placeholder': '!model.email ? "Please specify an email address" : ""'
       }
     },
     {
