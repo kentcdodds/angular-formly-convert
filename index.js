@@ -27,7 +27,21 @@ app.run(function(formlyConfig, appApiCheck) {
         className: appApiCheck.string
       })
     },
-    apiCheckInstance: appApiCheck
+    apiCheckInstance: appApiCheck,
+    link: function(scope, el) {
+      var input = el.find('input');
+      input.on('blur', thank);
+
+      function thank() {
+        alert('Thank you! Come again!');
+        input.off('blur', thank);
+      }
+    },
+    controller: function($scope, $window) {
+      $scope.onDoubleClick = function() {
+        $window.alert('Stop clicking me!');
+      }
+    }
   });
 });
 
