@@ -1,9 +1,27 @@
 var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
 
-app.run(function(formlyConfig) {
+app.constant('appApiCheck', apiCheck({
+  output: {prefix: 'appApiCheck'}
+}));
+
+app.run(function(formlyConfig, appApiCheck) {
   formlyConfig.setWrapper({
     template: '<formly-transclude></formly-transclude><div my-messages="options"></div>',
-    types: ['input', 'checkbox', 'select', 'textarea', 'radio']
+    types: ['input', 'checkbox', 'select', 'textarea', 'radio', 'ngConfInput']
+  });
+
+  formlyConfig.setType({
+    name: 'ngConfInput',
+    template: [
+      '<div class="{{to.className}}">NG-CONF ROCKS!</div>',
+      '<input class="form-control" ng-model="model[options.key]" ng-dblclick="onDoubleClick()" />'
+    ].join(' '),
+    wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+    defaultOptions: {
+      templateOptions: {
+        label: 'Awesome Input!'
+      }
+    }
   });
 });
 
@@ -35,9 +53,9 @@ app.controller('MainCtrl', function($scope, planets, $window) {
   vm.fields = [
     {
       key: 'firstName',
-      type: 'input',
+      type: 'ngConfInput',
       templateOptions: {
-        label: 'First Name',
+        className: 'awesome-sauce',
         required: true
       }
     },
