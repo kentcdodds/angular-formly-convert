@@ -37,27 +37,27 @@
     <form name="vm.userForm" ng-submit="vm.onSubmit(vm.user)">
       <div class="form-group" has-error="vm.userForm.firstName">
         <label for="firstName">First Name *</label>
-        <input type="text" ng-model="vm.user.firstName" name="firstName" class="form-control" id="firstName" placeholder="First Name" required>
+        <input type="text" ng-model="vm.user.firstName" name="firstName" class="form-control" id="firstName" required>
         <div my-messages="vm.userForm.firstName"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.lastName">
         <label for="lastName">Last Name *</label>
-        <input type="text" ng-model="vm.user.lastName" name="lastName" class="form-control" id="lastName" placeholder="Last Name" required>
+        <input type="text" ng-model="vm.user.lastName" name="lastName" class="form-control" id="lastName" required>
         <div my-messages="vm.userForm.lastName"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.email">
         <label for="emailAddress">Email Address *</label>
-        <input type="email" ng-model="vm.user.email" name="email" class="form-control" id="emailAddress" placeholder="Email address" required>
+        <input type="email" ng-model="vm.user.email" name="email" class="form-control" id="emailAddress" required>
         <div my-messages="vm.userForm.email"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.confirmEmail">
         <label for="emailAddressConfirm">Confirm Email Address *</label>
-        <input type="email" ng-model="vm.user.confirmEmail" name="confirmEmail" must-match="vm.user.email" class="form-control" id="emailAddressConfirm" placeholder="Confirm Email address" required>
+        <input type="email" ng-model="vm.user.confirmEmail" name="confirmEmail" must-match="vm.user.email" class="form-control" id="emailAddressConfirm" required>
         <div my-messages="vm.userForm.confirmEmail"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.streetAddress">
         <label for="streetAddress">Street Address *</label>
-        <textarea ng-model="vm.user.streetAddress" name="streetAddress" class="form-control" id="streetAddress" placeholder="Street Address" required></textarea>
+        <textarea ng-model="vm.user.streetAddress" name="streetAddress" class="form-control" id="streetAddress" required></textarea>
         <div my-messages="vm.userForm.streetAddress"></div>
       </div>
       <div class="form-group" has-error="vm.userForm.planet">
@@ -69,7 +69,7 @@
       </div>
       <div class="form-group" has-error="vm.userForm.postalCode">
         <label for="postalCode">Postal Code *</label>
-        <input type="number" ng-model="vm.user.postalCode" name="postalCode" class="form-control" id="postalCode" placeholder="Postal Code" required>
+        <input type="number" ng-model="vm.user.postalCode" name="postalCode" class="form-control" id="postalCode" required>
         <div my-messages="vm.userForm.postalCode"></div>
       </div>
       <div class="radio-group" has-error="vm.userForm.genderRadios">
