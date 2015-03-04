@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria']);
+var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
 app.controller('MainCtrl', function($scope, planets, $window) {
   var vm = this;
   var store = $window.localStorage;
@@ -20,6 +20,98 @@ app.controller('MainCtrl', function($scope, planets, $window) {
     {name: 'Orange', value: 'orange'},
     {name: 'Pink', value: 'pink'},
     {name: 'Yellow', value: 'yellow'}
+  ];
+
+  // fields
+
+  vm.fields = [
+    {
+      key: 'firstName',
+      type: 'input',
+      templateOptions: {
+        label: 'First Name',
+        required: true
+      }
+    },
+    {
+      key: 'lastName',
+      type: 'input',
+      templateOptions: {
+        label: 'Last Name',
+        required: true
+      }
+    },
+    {
+      key: 'email',
+      type: 'input',
+      templateOptions: {
+        label: 'Email Address',
+        type: 'email',
+        required: true
+      }
+    },
+    {
+      key: 'confirmEmail',
+      type: 'input',
+      templateOptions: {
+        label: 'Confirm Email Address',
+        type: 'email',
+        required: true
+      }
+    },
+    {
+      key: 'streetAddress',
+      type: 'textarea',
+      templateOptions: {
+        label: 'Street Address',
+        required: true
+      }
+    },
+    {
+      key: 'planet',
+      type: 'select',
+      templateOptions: {
+        label: 'Planet',
+        options: planets
+      }
+    },
+    {
+      key: 'postalCode',
+      type: 'input',
+      templateOptions: {
+        label: 'Postal Code',
+        type: 'number',
+        required: true
+      }
+    },
+    {
+      key: 'gender',
+      type: 'radio',
+      templateOptions: {
+        label: 'Your Gender?',
+        options: [
+          {name: 'Male', value: 'male'},
+          {name: 'Female', value: 'female'},
+          {name: 'Prefer not to say', value: 'unspecified'}
+        ]
+      }
+    },
+    {
+      key: 'colorPreference',
+      type: 'select',
+      templateOptions: {
+        label: 'Favorite Lightsaber Color?',
+        options: vm.lightsaberColors
+      }
+    },
+    {
+      key: 'agree',
+      type: 'checkbox',
+      templateOptions: {
+        label: 'Do you sign your soul away to our TOS?',
+        required: true
+      }
+    }
   ];
 
   var stopWatchingModel;
