@@ -21,7 +21,13 @@ app.run(function(formlyConfig, appApiCheck) {
       templateOptions: {
         label: 'Awesome Input!'
       }
-    }
+    },
+    apiCheck: {
+      templateOptions: appApiCheck.shape({
+        className: appApiCheck.string
+      })
+    },
+    apiCheckInstance: appApiCheck
   });
 });
 
