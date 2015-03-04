@@ -72,6 +72,7 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       type: 'select',
       templateOptions: {
         label: 'Planet',
+        required: true,
         options: planets
       }
     },
