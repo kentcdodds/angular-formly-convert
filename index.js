@@ -103,7 +103,6 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       type: 'select',
       templateOptions: {
         label: 'Favorite Lightsaber Color?',
-        required: true,
         options: vm.lightsaberColors
       }
     },
