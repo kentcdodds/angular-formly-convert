@@ -16,7 +16,7 @@ app.run(function(formlyConfig, appApiCheck) {
       '<div class="{{to.className}}">NG-CONF ROCKS!</div>',
       '<input class="form-control" ng-model="model[options.key]" ng-dblclick="onDoubleClick()" />'
     ].join(' '),
-    wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+    extends: 'input',
     defaultOptions: {
       templateOptions: {
         label: 'Awesome Input!'
