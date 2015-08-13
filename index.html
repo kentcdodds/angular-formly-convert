@@ -152,5 +152,10 @@
     <div class="some-message" ng-message="number">Must be a number</div>
   </div>
 </script>
+
+<script type="text/ng-template" id="formly-messages.html">
+  <formly-transclude></formly-transclude>
+  <pre ng-bind="options | json"></pre>
+</script>
 </body>
 </html>

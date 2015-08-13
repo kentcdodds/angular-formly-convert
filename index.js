@@ -1,4 +1,13 @@
 var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
+
+app.run(function(formlyConfig) {
+  formlyConfig.setWrapper({
+    name: 'formlyMessages',
+    templateUrl: 'formly-messages.html',
+    types: ['input', 'radio', 'select', 'textarea', 'checkbox']
+  });
+});
+
 app.controller('MainCtrl', function($scope, planets, $window) {
   var vm = this;
   var store = $window.localStorage;
