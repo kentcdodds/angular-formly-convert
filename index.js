@@ -1,11 +1,18 @@
 var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
 
-app.run(function(formlyConfig) {
+app.run(function(formlyConfig, formlyValidationMessages) {
   formlyConfig.setWrapper({
     name: 'formlyMessages',
     templateUrl: 'formly-messages.html',
     types: ['input', 'radio', 'select', 'textarea', 'checkbox']
   });
+
+  //formlyValidationMessages.addStringMessage('required', 'This field is required');
+  formlyValidationMessages.addStringMessage('email', 'Invalid email');
+  formlyValidationMessages.addStringMessage('number', 'Invalid number');
+  formlyValidationMessages.messages.required = 'to.label + " is required"';
+  formlyValidationMessages.messages.minlength = '"Must be at least " + to.minlength + " long"';
+
 });
 
 app.controller('MainCtrl', function($scope, planets, $window) {
@@ -70,7 +77,10 @@ app.controller('MainCtrl', function($scope, planets, $window) {
         required: true
       },
       validators: {
-        betterMatches: '$viewValue === model.email'
+        betterMatches: {
+          expression: '$viewValue === model.email',
+          message: '$viewValue + " is not equal to " + model.email'
+        }
       }
     },
     {
@@ -96,8 +106,13 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       templateOptions: {
         label: 'Postal Code',
         type: 'number',
-        required: true,
-        pattern: '\\d{5}'
+        required: true
+      },
+      validators: {
+        postalCode: {
+          expression: '$viewValue.length === 5',
+          message: '"Must be 5 digits"'
+        }
       }
     },
     {
