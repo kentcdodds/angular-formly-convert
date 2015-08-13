@@ -7,6 +7,12 @@ app.run(function(formlyConfig, formlyValidationMessages) {
     types: ['input', 'radio', 'select', 'textarea', 'checkbox']
   });
 
+  formlyConfig.setType({
+    name: 'colorpicker',
+    template: '<color-picker ng-model="model[options.key]" color-picker-format="\'hex\'" color-picker-swatch-bootstrap="false"></color-picker>',
+    wrapper: ['bootstrapLabel', 'bootstrapHasError']
+  });
+
   //formlyValidationMessages.addStringMessage('required', 'This field is required');
   formlyValidationMessages.addStringMessage('email', 'Invalid email');
   formlyValidationMessages.addStringMessage('number', 'Invalid number');
@@ -130,7 +136,7 @@ app.controller('MainCtrl', function($scope, planets, $window) {
     },
     {
       key: 'colorPreference',
-      type: 'select',
+      type: 'colorpicker',
       templateOptions: {
         label: 'Favorite Lightsaber Color?',
         required: true,
