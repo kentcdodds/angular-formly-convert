@@ -59,6 +59,9 @@ app.controller('MainCtrl', function($scope, planets, $window) {
         label: 'Confirm Email Address',
         type: 'email',
         required: true
+      },
+      validators: {
+        betterMatches: '$viewValue === model.email'
       }
     },
     {
