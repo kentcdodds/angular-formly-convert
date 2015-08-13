@@ -36,7 +36,11 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       type: 'input',
       templateOptions: {
         label: 'Last Name',
-        required: true
+        required: true,
+        disabled: true
+      },
+      expressionProperties: {
+        'templateOptions.disabled': '!model.firstName'
       }
     },
     {
