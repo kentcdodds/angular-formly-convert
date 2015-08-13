@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap']);
+var app = angular.module('app', ['ngAnimate', 'ngMessages', 'ngAria', 'formly', 'formlyBootstrap', 'color.picker']);
 
 app.run(function(formlyConfig, formlyValidationMessages) {
   formlyConfig.setWrapper({
