@@ -62,7 +62,7 @@ app.controller('MainCtrl', function($scope, planets, $window) {
       email: 'luke@ilovedaddy.com',
       confirmEmail: 'luke@ilovedaddy.com',
       streetAddress: '1234 Hi Five Drive',
-      planet: 'Tatooine',
+      planet: 'tatooine',
       postalCode: 12345,
       gender: 'male',
       colorPreference: 'blue',
